@@ -1,0 +1,12 @@
+CREATE DATABASE IF NOT EXISTS `bc_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `bc_db`;
+
+CREATE TABLE IF NOT EXISTS `bc_hist` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `Barcode` varchar(255),
+    `ProductName` varchar(255),
+    `ProductType` varchar(255),
+    `Price` DECIMAL(18,2),
+    `Date` DATE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;

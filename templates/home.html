@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+        <meta charset="UTF-8">
+        <title>Home</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <script>
+            $(document).ready(function(){
+                var namespace='/home';
+                var socket = io.connect('http://' + document.domain + ':' + location.port + '/home');
+                var numbers_revieved = []
+               
+                socket.on('connect', function() {
+                    console.log("connected");
+                    socket.emit('a_connection', {
+                        data: 'User Connected'
+                    });
+                });
+                
+                socket.on('bcode', function(msg) {
+                    console.log("Barcode recieved " + msg.bcode);
+                    $('#barcode').append('<p>Barcode: ' + msg.bcode + '</p>');
+                    $('#barcode').append("<form action='{{url_for('home') }}' method='post'><label for='product_name'></label><input type='text' name='pname' placeholder='Product Name' id='Pname' required><label for='ptype'></label><input type='text' name='ptype' placeholder='Type' id='Ptype' required><label for='pprice'></label><input type='text' name='pprice' placeholder='Price' id='Pprice' required><div class='msg'>{{ msg }}</div><input type='submit' value='Submit'></form>")
+                });
+            });
+        </script>
+        <div class="links">
+            <a href="{{ url_for('logout') }}">Logout</a>
+            <a href="{{ url_for('database') }}">Database</a>
+        </div>
+        <div class="scanner">
+            <div style="overflow: auto; width:1000px; height:500px;">
+                <div id="barcode">Barcodes
+                    <div class="bcode_form">
+                        <h1>New Items</h1>
+                        <form action="{{url_for('home') }}" method="post">
+                            <label for="product_name"></label>
+                                <input type="text" name="pname" placeholder="Product Name" id="pname" required>
+                            <label for="ptype"></label>
+                                <input type="text" name="ptype" placeholder="Type" id="ptype" required>
+                            <label for="pprice"></label>
+                                <input type="text" name="pprice" placeholder="Price" id="pprice" required>
+
+                                <div class="msg">{{ msg }}</div>
+                                <input type="submit" value="Submit">
+                        </form>
+                    <!-- Barcode logged here -->
+                </div>
+            </div>
+        </div>
+        <div class=DB_items>
+            <pre>{{ db_items }} Items in database</pre>
+            <pre>Total: {{ db_price }}:-</pre>
+        </div>
+        <div class=items_month>
+            <pre>{{ month_items }} items this month</pre>
+            <pre>This month: {{ month_price }}:-</pre>
+        </div>
+    </body>
+</html>
