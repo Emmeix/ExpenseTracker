@@ -7,8 +7,9 @@ CREATE TABLE IF NOT EXISTS `bc_store` (
     `ProductName` varchar(255),
     `ProductType` varchar(255),
     `Price` DECIMAL(18,2),
-    `date`
+    `date` DATE,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
 
 INSERT INTO bc_store (Barcode, ProductName, ProductType, Price) VALUES ('8005110060007', 'Mutti Canned Tomato', 'Food', 11.50);
