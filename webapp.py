@@ -9,6 +9,7 @@ import datetime
 from tabulate import tabulate
 from flask_socketio import SocketIO, emit
 
+
 mo = time.strftime('%Y-%m') # Time for monthly price calc
 mof = (mo + "%") # Time for monthly price calc formatted
 dat = datetime.datetime.now()
@@ -68,10 +69,11 @@ def sock_connect():
     print("User Connected")
     
     
-@socketio.on('a_connection', namespace='/home')
-def test_con(message):
-    print("Connected")
-
+@socketio.on('form_submit', namespace='/home')
+def item_submit(message):
+    print(message)
+    
+    
 #Disconnection socket  
 @socketio.on('disconnect', namespace='/home')
 def sock_disconnect():
@@ -184,4 +186,4 @@ def root():
         return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host='0.0.0.0')

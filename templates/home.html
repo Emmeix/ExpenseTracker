@@ -20,13 +20,26 @@
                         data: 'User Connected'
                     });
                 });
-                
+
+                $("[id^='form']").submit(function() {
+                    
+                    var result = $('form').serializeArray().reduce(function(obj, item) {
+                        obj[item.name] = item.value;
+                        return obj; 
+                    }, {});
+
+                    socket.emit('form_submit', result);
+                    return false;
+                });
+
                 socket.on('bcode', function(msg) {
                     console.log("Barcode recieved " + msg.bcode);
                     $('#barcode').append('<p>Barcode: ' + msg.bcode + '</p>');
-                    $('#barcode').append("<form action='{{url_for('home') }}' method='post'><label for='product_name'></label><input type='text' name='pname' placeholder='Product Name' id='Pname' required><label for='ptype'></label><input type='text' name='ptype' placeholder='Type' id='Ptype' required><label for='pprice'></label><input type='text' name='pprice' placeholder='Price' id='Pprice' required><div class='msg'>{{ msg }}</div><input type='submit' value='Submit'></form>")
+                    $('#barcode').append("<form action='' id='bcode_submit' name='bcode_submit'><input id='Pname' name='Pname' placeholder='Product Name' required/><input id='Ptype' name='Ptype' placeholder='Product Type' required/><input id='Pprice' name='Pprice' placeholder='Price' required/><button type='submit'>Push</button></form> ");
                 });
+                
             });
+
         </script>
         <div class="links">
             <a href="{{ url_for('logout') }}">Logout</a>
@@ -35,19 +48,25 @@
         <div class="scanner">
             <div style="overflow: auto; width:1000px; height:500px;">
                 <div id="barcode">Barcodes
-                    <div class="bcode_form">
-                        <h1>New Items</h1>
-                        <form action="{{url_for('home') }}" method="post">
-                            <label for="product_name"></label>
-                                <input type="text" name="pname" placeholder="Product Name" id="pname" required>
-                            <label for="ptype"></label>
-                                <input type="text" name="ptype" placeholder="Type" id="ptype" required>
-                            <label for="pprice"></label>
-                                <input type="text" name="pprice" placeholder="Price" id="pprice" required>
-
-                                <div class="msg">{{ msg }}</div>
-                                <input type="submit" value="Submit">
-                        </form>
+                    <h1>New Items</h1>
+                    
+                    <div id="form1">
+                    <form action="" id="bcode_submit" name="bcode_submit">
+                            <input id="Pname" name="Pname" placeholder="Product Name" required/>
+                            <input id="Ptype" name="Ptype" placeholder="Product Type" required/>
+                            <input id="Pprice" name="Pprice" placeholder="Price" required/>
+                            <button type="submit">Push</button>
+                    </form>  
+                    </div>
+                    
+                    <div id=form2>            
+                     <form action="" id="bcode_submit" name="bcode_submit">
+                            <input id="Pname" name="Pname" placeholder="Product Name" required/>
+                            <input id="Ptype" name="Ptype" placeholder="Product Type" required/>
+                            <input id="Pprice" name="Pprice" placeholder="Price" required/>
+                            <button type="submit">Push</button>
+                     </form> 
+                    </div>
                     <!-- Barcode logged here -->
                 </div>
             </div>
