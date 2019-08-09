@@ -6,9 +6,9 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
-        <div class="links">
-            <a href="{{ url_for('logout') }}">Logout</a>
-            <a href="{{ url_for('home') }}">home</a>
+        <div class="navigation">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a class="logout" href="{{ url_for('logout') }}">Logout</a>
         </div>
         <div class=DB_items>
         </div>

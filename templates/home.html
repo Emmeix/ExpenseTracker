@@ -32,40 +32,26 @@
                     return false;
                 });
 
-                socket.on('bcode', function(msg) {
+                socket.on('bcode_nit' , function(msg) {
                     console.log("Barcode recieved " + msg.bcode);
-                    $('#barcode').append('<p>Barcode: ' + msg.bcode + '</p>');
-                    $('#barcode').append("<form action='' id='bcode_submit' name='bcode_submit'><input id='Pname' name='Pname' placeholder='Product Name' required/><input id='Ptype' name='Ptype' placeholder='Product Type' required/><input id='Pprice' name='Pprice' placeholder='Price' required/><button type='submit'>Push</button></form> ");
+                    $('#barcode').append("<p>" + msg.bcode + "</p>");
+                })
+                socket.on('bcode_it', function(msg) {
+                    console.log("Barcode recieved " + msg.bcode);
+                    $('#barcode').append('<p>Barcode: ' + msg.bcode + ' not in database! Add to database from scanner app to continue scanning.</p>');
                 });
                 
             });
 
         </script>
-        <div class="links">
-            <a href="{{ url_for('logout') }}">Logout</a>
-            <a href="{{ url_for('database') }}">Database</a>
+        <div class="navigation">
+            <a class="database" href="{{ url_for('database') }}">Database</a>
+            <a class="logout" href="{{ url_for('logout') }}">Logout</a>
         </div>
         <div class="scanner">
-            <div style="overflow: auto; width:1000px; height:500px;">
-                <div id="barcode">Barcodes
+            <div class="container" style="overflow: auto; width:1000px; height:500px;">
+                <div id="barcode">
                     <h1>New Items</h1>
-                    
-                    <div id="form1">
-                    <form action="" id="bcode_submit" name="bcode_submit">
-                            <input id="Pname" name="Pname" placeholder="Product Name" required/>
-                            <input id="Ptype" name="Ptype" placeholder="Product Type" required/>
-                            <input id="Pprice" name="Pprice" placeholder="Price" required/>
-                            <button type="submit">Push</button>
-                    </form>  
-                    </div>
-                    
-                    <div id=form2>            
-                     <form action="" id="bcode_submit" name="bcode_submit">
-                            <input id="Pname" name="Pname" placeholder="Product Name" required/>
-                            <input id="Ptype" name="Ptype" placeholder="Product Type" required/>
-                            <input id="Pprice" name="Pprice" placeholder="Price" required/>
-                            <button type="submit">Push</button>
-                     </form> 
                     </div>
                     <!-- Barcode logged here -->
                 </div>
