@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, url_for, session, redirect, R
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import mysql.connector as MYSQL
-import pika
 import time
 import datetime
 from tabulate import tabulate
@@ -13,14 +12,6 @@ from flask_socketio import SocketIO, emit
 mo = time.strftime('%Y-%m') # Time for monthly price calc
 mof = (mo + "%") # Time for monthly price calc formatted
 dat = datetime.datetime.now()
-
-
-#RabbitMQ connection
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-channel = connection.channel()
-#Create queue, send msg, close
-channel.queue_declare(queue='bc')
-channel.basic_publish(exchange='', routing_key='bc', body='Run')
 
 app = Flask(__name__) #For user db
 bcdb = Flask(__name__) #For barcode db
@@ -131,6 +122,7 @@ def home():
                 #If barcode not in DB  
                 if not result:
                     print("Not here")
+                    socketio.emit('bcode_it', {'bcode': data}, namespace='/home')
 
                 #If item exists in table
                 else:
@@ -139,7 +131,7 @@ def home():
                         bc_result.append(row)
                         #print(row)                
                         print("In table")
-                        socketio.emit('bcode', {'bcode': str(bc_result)}, namespace='/home')
+                        socketio.emit('bcode_nit', {'bcode': str(bc_result)}, namespace='/home')
 
             #Post for product
             if 'pname' in request.form and 'ptype' in request.form and 'pprice' in request.form:
