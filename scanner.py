@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import sys
 import os
-import pika
 import mysql.connector
 import time
 import datetime
@@ -16,10 +15,6 @@ mof = (mo + "%") # Time for monthly price calc formatted
 dat = datetime.datetime.now()
 monthd = dat.strftime("%B") # Day of month
 
-#RabbitMQ connection
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-channel = connection.channel()
-channel.queue_declare(queue='bc')
 
 #Session to webapp
 print("Username/password for webapp")
@@ -116,8 +111,10 @@ def sc():
 		#If item doenst exist in table
 		if not result:
 
+			s.post('http://localhost:5000/home', data = {'Bcode': bc})
 			#New item Info
 			print("### New item! ###")
+			
 			Pname = input("Product Name: ")
 			Ptype = input("Product Type: ")
 			Price = input("Price: ")
@@ -172,17 +169,6 @@ def sc():
 		print("# " + "Barcode: " + bc + "            #") #Print Barcode
 	
 sc()
-#Callback function called by RabbitMQ
-def callback(ch, method, proprties, body):
-	print('+++ Call recieved from webapp')
-	if body == "Run":
-		print('+++ Starting scanner')
-		sc()
-
-#Consumer for RabbitMQ
-channel.basic_consume(queue='bc', on_message_callback=callback, auto_ack=True)
-print('+++ Waiting to start scanner')
-channel.start_consuming()
 
 
 
