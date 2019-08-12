@@ -7,6 +7,8 @@ import time
 import datetime
 from tabulate import tabulate
 from flask_socketio import SocketIO, emit
+import socket
+
 
 
 mo = time.strftime('%Y-%m') # Time for monthly price calc
@@ -56,8 +58,12 @@ def logout():
 
 #Connection socket
 @socketio.on('connect', namespace='/home')
-def sock_connect():
+def sock_connect_home():
     print("User Connected")
+
+@socketio.on('connect', namespace='/home/services')
+def sock_connect_services():
+    print("User connected")
     
     
 @socketio.on('form_submit', namespace='/home')
@@ -169,6 +175,21 @@ def database():
         db_full = (tabulate(query, headers=['id', 'Barcode', 'ProductName', 'ProductType', 'Price'], tablefmt='psql'))
         return render_template('database.html', db_full=db_full) 
 
+
+@app.route('/home/services', methods=['POST', 'GET'])
+def services():
+    if request.method == 'POST':
+        if 'statu' in request.form:
+            status = request.form['statu']
+            print(status)
+            socketio.emit('statu', {'statu': status}, namespace='/home/services')
+            
+        if 'statd' in request.form:
+            status = request.form['statd']
+            print(status)
+            socketio.emit('status', {'statd': status}, namespace='/home/services')               
+        
+    return render_template('services.html')
 
 @app.route('/')
 def root():

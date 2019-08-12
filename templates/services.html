@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+        <meta charset="UTF-8">
+        <title>Home</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="navigation">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a class="database" href="{{ url_for('database') }}">Database</a>
+            <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+            <a class="services" href="{{ url_for('services') }}">Services</a>
+        </div>
+        <script>
+            $(document).ready(function(){
+                var namespace='/home/services';
+                var socket = io.connect('http://' + document.domain + ':' + location.port + '/home/services');
+
+                socket.on('connect', function() {
+                    console.log("Connected")
+                });
+
+                socket.on('statu', function(msg){
+                    console.log(msg.statu);
+                    $('#statuses').append('<p>' + msg.statu + '</p>');
+                })
+            })
+        </script>
+        <div id="statuses">
+            <!-- Statuses logged here-->
+
+        </div>
+    </body>
+</html>
