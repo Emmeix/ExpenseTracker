@@ -23,15 +23,54 @@
                     console.log("Connected")
                 });
 
-                socket.on('statu', function(msg){
+                
+                //If up
+                
+                //DNS
+                socket.on('statDNSU', function(msg){
                     console.log(msg.statu);
-                    $('#statuses').append('<p>' + msg.statu + '</p>');
-                })
+                    $('#DNS').replaceWith('<div id="DNS"><span style="color: green">' + msg.statu + '</span></div>');
+                });
+                
+                //DNS web
+                socket.on('statDNSWU', function(msg){
+                    console.log(msg.statu)
+                    $('#DNS_WEB').replaceWith('<div id="DNS_WEB"<span style="color: green">' + msg.statu + '</span></div>');
+                });
+
+                //SMB
+                socket.on('statSMBU', function(msg){
+                    console.log(msg.statu)
+                    $('#SMB').replaceWith('<div id="SMB"<span style="color: green">' + msg.statu + '</span></div>');
+                });
+
+                
+                
+                //If down
+                
+                //DNS
+                socket.on('statDNSD', function(msg){
+                    console.log(msg.statd);
+                    $('#DNS').replaceWith('<div id="DNS"<span style="color: red">' + msg.statd + '</span></div>');
+                });
+                //DNS web
+                socket.on('statDNSWD', function(msg){
+                    console.log(msg.statd)
+                    $('#DNS_WEB').replaceWith('<div id="DNS_WEB"<span style="color: red">' + msg.statd + '</span></div>');
+                });
+                //SMB
+                socket.on('statSMBD', function(msg){
+                    console.log(msg.statd);
+                    $('#SMB').replaceWith('<div id="SMB"<span style="color: red">' + msg.statd + '</span></div>');
+                });
             })
         </script>
         <div id="statuses">
             <!-- Statuses logged here-->
-
+            <div id="DNS">DNS is:<span style="color: gray">...</span></div>
+            <div id="DNS_WEB">DNS Web is: <span style="color: gray">...</span></div>
+            <div id="SMB">SMB is:<span style="color: gray">...</span></div>
+            <div style="font-size: 12px; color: gray">(updates ever 30 seconds)</div>
         </div>
     </body>
 </html>

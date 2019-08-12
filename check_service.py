@@ -2,9 +2,11 @@
 import socket
 import time
 import requests
+import getpass
 
-
-def service_check():
+def service_check(usr, passw):
+    req = requests.session()
+    req.post('http://localhost:5000/login', data={'username': usr, 'password': passw})
     def check_service(ip, port):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         ch = sock.connect_ex((ip, port))
@@ -13,12 +15,10 @@ def service_check():
 
     services = [
         ("DNS", '192.168.1.82', 53),
-        ("DNS_Web", '192.168.1.82', 80),
-        ("DNS_SSH", '192.168.1.82', 22),
+        ("DNS Web", '192.168.1.82', 80),
         ("SMB", '192.168.1.121', 139),
-        ("SMB_SSH", '192.168.1.121', 22),
     ]
-    req = requests.session()
+
     while True:
         for s in services:
             check = check_service(s[1], s[2])
@@ -33,4 +33,8 @@ def service_check():
         time.sleep(30)
 
 if __name__ == "__main__":
-    service_check()
+    print("Username/password for webapp")
+    usr = input("Username: ")
+    passw = getpass.getpass("Password: ")
+    service_check(usr, passw)
+

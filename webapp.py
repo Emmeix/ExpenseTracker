@@ -178,18 +178,28 @@ def database():
 
 @app.route('/home/services', methods=['POST', 'GET'])
 def services():
-    if request.method == 'POST':
-        if 'statu' in request.form:
-            status = request.form['statu']
-            print(status)
-            socketio.emit('statu', {'statu': status}, namespace='/home/services')
+    if 'loggedin' in session:
+        if request.method == 'POST':
+            if 'statu' in request.form:
+                status = request.form['statu']
+                if status == "DNS is up":
+                    socketio.emit('statDNSU', {'statu': status}, namespace='/home/services')
+                if status == "DNS Web is up":
+                    socketio.emit('statDNSWU', {'statu': status}, namespace='/home/services')
+                if status == "SMB is up":
+                    socketio.emit('statSMBU', {'statu': status}, namespace='/home/services')
+            if 'statd' in request.form:
+                status = request.form['statd'] 
+                if status == "DNS is down":
+                    socketio.emit('statDNSD', {'statd': status}, namespace='/home/services')
+                if status == "DNS Web is down":
+                    socketio.emit('statDNSWD', {'statd': status}, namespace='/home/services')   
+                if status == "SMB is down":
+                    socketio.emit('statSMBD', {'statd': status}, namespace='/home/services') 
+        return render_template('services.html')  
+
+
             
-        if 'statd' in request.form:
-            status = request.form['statd']
-            print(status)
-            socketio.emit('status', {'statd': status}, namespace='/home/services')               
-        
-    return render_template('services.html')
 
 @app.route('/')
 def root():
@@ -199,4 +209,6 @@ def root():
         return redirect(url_for('login'))
 
 if __name__ == "__main__":
+    socketio.run(app, debug=True, host='0.0.0.0')
+else:
     socketio.run(app, debug=True, host='0.0.0.0')
