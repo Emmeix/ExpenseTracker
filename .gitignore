@@ -1,3 +1,4 @@
 .vscode/settings.json
 barcode.log
 saved_stuff
+__pycache__/
