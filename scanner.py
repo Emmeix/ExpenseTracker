@@ -18,15 +18,15 @@ monthd = dat.strftime("%B") # Day of month
 
 #Session to webapp
 print("Username/password for webapp")
-username = input("Username: ")
-password = getpass.getpass("Password: ")
-s = requests.session()
-r = s.post('http://localhost:5000/login', data={'username': username, 'password': password})
+
 #print(r.text)
 
 #Barcode scanner and translator
-def sc():
-	
+def sc(usr, passw):
+	usr = input("Username: ")
+	passw = getpass.getpass("Password: ")
+	s = requests.session()
+	s.post('http://localhost:5000/login', data={'username': usr, 'password': passw})
 	#MySQL creds
 	connection = mysql.connector.connect(
 		host='localhost',
@@ -167,8 +167,14 @@ def sc():
 		print ("\n")
 		print("#####################################")
 		print("# " + "Barcode: " + bc + "            #") #Print Barcode
-	
-sc()
+
+if __name__ == "__main__":	
+	print("Username/password for webapp")
+	usr = input("Username: ")
+	passw = getpass.getpass("Password: ")
+	sc(usr, passw)
+else:
+	sc(usr, passw)
 
 
 
