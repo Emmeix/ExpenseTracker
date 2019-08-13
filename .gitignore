@@ -2,3 +2,4 @@
 barcode.log
 saved_stuff
 __pycache__/
+.statfile.log
