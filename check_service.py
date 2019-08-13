@@ -20,16 +20,21 @@ def service_check(usr, passw):
     ]
 
     while True:
+        statfile = open(".statfile.log", "w+")
         for s in services:
             check = check_service(s[1], s[2])
             print("%s is %s" % (s[0], "up" if check == 0 else "down"))
-        
+            statfile.write("%s is %s" % (s[0], "up\n" if check == 0 else "down"))
+            statfile.write("\n")
+
             if check == 0:
                 stu = s[0] + " is up"
-                req.post('http://localhost:5000/home/services', data = {'statu': stu})
+                req.post('http://localhost:5000/home', data = {'statu': stu})
             else:
                 std = s[0] + " is down"
-                req.post('http://localhost:5000/home/services', data = {'statd': std})
+                req.post('http://localhost:5000/home', data = {'statd': std})
+        
+        statfile.close()
         time.sleep(30)
 
 if __name__ == "__main__":
