@@ -60,6 +60,22 @@ def logout():
 @socketio.on('connect', namespace='/home')
 def sock_connect_home():
     print("User Connected")
+    statfile = open(".statfile.log", "r")
+        
+    for line in statfile:
+        if line == "DNS is up\n":
+            socketio.emit('statDNSU', {'statu': line}, namespace='/home')
+        if line == "DNS Web is up\n":
+            socketio.emit('statDNSWU', {'statu': line}, namespace='/home')
+        if line == "SMB is up\n":
+            socketio.emit('statSMBU', {'statu': line}, namespace='/home')
+
+        if line == "DNS is down\n":
+            socketio.emit('statDNSD', {'statd': line}, namespace='/home')
+        if line == "DNS Web is down\n":
+            socketio.emit('statDNSWD', {'statd': line}, namespace='/home')   
+        if line == "SMB is down\n":
+            socketio.emit('statSMBD', {'statd': line}, namespace='/home') 
 
 @socketio.on('connect', namespace='/home/services')
 def sock_connect_services():
@@ -76,8 +92,8 @@ def item_submit(message):
 def sock_disconnect():
     print("User Disconnected")
 
-@app.route('/home', methods=['POST', 'GET'])
-def home():
+@app.route('/home/scanner', methods=['POST', 'GET'])
+def scanner():
     if 'loggedin' in session: 
         
         #bclog = open('barcode.log', 'r')
@@ -128,7 +144,7 @@ def home():
                 #If barcode not in DB  
                 if not result:
                     print("Not here")
-                    socketio.emit('bcode_it', {'bcode': data}, namespace='/home')
+                    socketio.emit('bcode_it', {'bcode': data}, namespace='/home/scanner')
 
                 #If item exists in table
                 else:
@@ -137,7 +153,7 @@ def home():
                         bc_result.append(row)
                         #print(row)                
                         print("In table")
-                        socketio.emit('bcode_nit', {'bcode': str(bc_result)}, namespace='/home')
+                        socketio.emit('bcode_nit', {'bcode': str(bc_result)}, namespace='/home/scanner')
 
             #Post for product
             if 'pname' in request.form and 'ptype' in request.form and 'pprice' in request.form:
@@ -148,7 +164,7 @@ def home():
                 print(Pname, Ptype, Price)  
         
         return render_template(
-            'home.html', 
+            'scanner.html', 
             db_items=db_items, 
             month_items=month_items,
             db_price=db_price,
@@ -176,27 +192,28 @@ def database():
         return render_template('database.html', db_full=db_full) 
 
 
-@app.route('/home/services', methods=['POST', 'GET'])
-def services():
+@app.route('/home', methods=['POST', 'GET'])
+def home():
     if 'loggedin' in session:
+
         if request.method == 'POST':
             if 'statu' in request.form:
                 status = request.form['statu']
                 if status == "DNS is up":
-                    socketio.emit('statDNSU', {'statu': status}, namespace='/home/services')
+                    socketio.emit('statDNSU', {'statu': status}, namespace='/home')
                 if status == "DNS Web is up":
-                    socketio.emit('statDNSWU', {'statu': status}, namespace='/home/services')
+                    socketio.emit('statDNSWU', {'statu': status}, namespace='/home')
                 if status == "SMB is up":
-                    socketio.emit('statSMBU', {'statu': status}, namespace='/home/services')
+                    socketio.emit('statSMBU', {'statu': status}, namespace='/home')
             if 'statd' in request.form:
                 status = request.form['statd'] 
                 if status == "DNS is down":
-                    socketio.emit('statDNSD', {'statd': status}, namespace='/home/services')
+                    socketio.emit('statDNSD', {'statd': status}, namespace='/home')
                 if status == "DNS Web is down":
-                    socketio.emit('statDNSWD', {'statd': status}, namespace='/home/services')   
+                    socketio.emit('statDNSWD', {'statd': status}, namespace='/home')   
                 if status == "SMB is down":
-                    socketio.emit('statSMBD', {'statd': status}, namespace='/home/services') 
-        return render_template('services.html')  
+                    socketio.emit('statSMBD', {'statd': status}, namespace='/home') 
+        return render_template('home.html')  
 
 
             

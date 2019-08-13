@@ -89,3 +89,22 @@ a {
     padding-right: 10px;
     padding-left: 10px;
 }
+
+.statuses {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.sitem{
+    margin-left: 10px;
+    margin-right: 10px;
+    color: gray;
+}
+
+.upinfo {
+    font-size: 12px;
+    color: gray;
+    text-align: center;
+    margin-top: 10px;
+}

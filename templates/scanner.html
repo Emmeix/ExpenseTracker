@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+        <meta charset="UTF-8">
+        <title>Home</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <script>
+            $(document).ready(function(){
+                var namespace='/home/scanner';
+                var socket = io.connect('http://' + document.domain + ':' + location.port + '/home/scanner');
+                var numbers_revieved = []
+               
+                socket.on('connect', function() {
+                    console.log("connected");
+                    socket.emit('a_connection', {
+                        data: 'User Connected'
+                    });
+                });
+
+                $("[id^='form']").submit(function() {
+                    
+                    var result = $('form').serializeArray().reduce(function(obj, item) {
+                        obj[item.name] = item.value;
+                        return obj; 
+                    }, {});
+
+                    socket.emit('form_submit', result);
+                    return false;
+                });
+
+                socket.on('bcode_nit' , function(msg) {
+                    console.log("Barcode recieved " + msg.bcode);
+                    $('#barcode').append("<p>" + msg.bcode + "</p>");
+                })
+                socket.on('bcode_it', function(msg) {
+                    console.log("Barcode recieved " + msg.bcode);
+                    $('#barcode').append('<p>Barcode: ' + msg.bcode + ' not in database! Add to database from scanner app to continue scanning.</p>');
+                });
+                
+            });
+
+        </script>
+        <div class="navigation">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a class="database" href="{{ url_for('database') }}">Database</a>
+            <a class="logout" href="{{ url_for('logout') }}">Logout</a>
+            <a class="services" href="{{ url_for('scanner') }}">Scanner</a>
+        </div>
+        <div class="scanner">
+            <div class="container" style="overflow: auto; width:1000px; height:500px;">
+                <div id="barcode">
+                    <h1>New Items</h1>
+                    </div>
+                    <!-- Barcode logged here -->
+                </div>
+            </div>
+        </div>
+        <div class=DB_items>
+            <pre>{{ db_items }} Items in database</pre>
+            <pre>Total: {{ db_price }}:-</pre>
+        </div>
+        <div class=items_month>
+            <pre>{{ month_items }} items this month</pre>
+            <pre>This month: {{ month_price }}:-</pre>
+        </div>
+    </body>
+</html>
